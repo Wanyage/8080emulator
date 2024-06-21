@@ -7,7 +7,7 @@ void parsecsv8080ops(char ***opsarr){
     char[50] buf = "\0";
     FILE *fp;
 
-    fp = fopen("8080ops.csv", "r");
+    fp = fopen("../data/8080ops.csv", "r");
     if(!fp){
         printf("8080ops.csv file didn't open.\n");
         exit(1);
@@ -33,7 +33,7 @@ int main(){
     char[256][3][10];
     FILE *fp;
 
-    fp = fopen("spaceinvaders.h", "r");
+    fp = fopen("../data/spaceinvaders.h", "r");
     if(!fp){
         printf("spaceinvaders.h file didn't open.\n");
         exit(1);
@@ -42,6 +42,7 @@ int main(){
     while(*fp){
         printf("%04i ", byte);
         byte = 8080op(fp, byte);
+        for(int i = 0; i < byte; i++) fp++;
     }
 
 }
