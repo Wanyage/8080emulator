@@ -9,7 +9,7 @@ void parsecsv8080ops(char ***opsarr){
 
     fp = fopen("8080ops.csv", "r");
     if(!fp){
-        printf("File didn't open");
+        printf("8080ops.csv file didn't open.\n");
         exit(1);
     }
 
@@ -35,7 +35,7 @@ int main(){
 
     fp = fopen("spaceinvaders.h", "r");
     if(!fp){
-        printf("File didn't open");
+        printf("spaceinvaders.h file didn't open.\n");
         exit(1);
     }
 
