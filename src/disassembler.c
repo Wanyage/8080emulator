@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void parsecsv8080ops(char ***opsarr){
+struct op{
+    int size;
+    char op[10];
+};
+
+void parsecsv8080ops(struct op *operations){
     //D8 means one byte address reference D16 means two byte address reference?
     //do it in format opsarr[][x] where x = 0 is size of op, 1 is the front most part of op, 2 is the args of the op (skip the part where memory is referenced i.e. D8 or adr)
     char[50] buf = "\0";
@@ -13,10 +18,28 @@ void parsecsv8080ops(char ***opsarr){
         exit(1);
     }
 
+    int r = 0, c = 0, i = 0, inquotemark = 0;
+
     for(;*fp; fp++){
-
+        if(*fp == '"') inquotemark = !inquotemark;
+        else if(*fp == ',' && !inquotemark){
+            c++;
+        }
+        else if(c == 1){
+            buf[i] = *fp;
+            i++
+        }
+        else if(c == 2){
+            buf[i] = '\0';
+            //modify buf so it doesnt contain d16, d8 or adr and strcpy it to operations[r].op
+            i = 0;
+            operations[r].size = (int) *fp - '0';
+        }
+        else if(c >= 4){
+            c = 0;
+            r++;
+        }
     }
-
 }
 
 int 8080op(FILE *fp, int pc, char ***opsarr]){
@@ -30,7 +53,7 @@ int 8080op(FILE *fp, int pc, char ***opsarr]){
 
 int main(){
     int byte = 0;
-    char[256][3][10];
+    struct op operations[256];
     FILE *fp;
 
     fp = fopen("../data/spaceinvaders.h", "r");
