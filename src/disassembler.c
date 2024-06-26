@@ -32,7 +32,6 @@ void parsecsv8080ops(struct op *operations){
         }
         else if(c == 2){
             buf[i] = '\0';
-            //modify buf so it doesnt contain d16, d8 or adr and strcpy it to operations[r].op
             toremove = strstr(buf,"D8") | strstr(buf,"D16") | strstr(buf,"adr");
             if(toremove) *toremove = '\0';
             strcpy(operations[r].op, buf);
@@ -46,9 +45,15 @@ void parsecsv8080ops(struct op *operations){
     }
 }
 
-int 8080op(FILE *fp, int pc, char ***opsarr]){
-    int bytes = 1;
+int 8080op(FILE *fp, int pc, struct op *operations){
+    int bytes = operations[*fp].size;
     printf("%04x ", pc);
+
+    for(int i = 0; i < operations[*fp].size; i++) printf("#02x ", fp[i]);
+    for(int i = 0; i < 3 - operations[*fp].size; i++) printf("   ");
+
+    //still need to do the extra args associated with operations
+    printf("%s", op);
 
     //use opsarr to print operation line
 
@@ -56,7 +61,7 @@ int 8080op(FILE *fp, int pc, char ***opsarr]){
 }
 
 int main(){
-    int byte = 0;
+    int pc = 0;
     struct op operations[256];
     FILE *fp;
 
@@ -66,10 +71,10 @@ int main(){
         exit(1);
     }
 
-    while(*fp){
-        printf("%04i ", byte);
-        byte = 8080op(fp, byte);
-        for(int i = 0; i < byte; i++) fp++;
-    }
+    parsecsv8080ops(operations);
 
+    while(*fp){
+        pc = 8080op(fp, pc);
+        for(int i = 0; i < pc; i++) fp++;
+    }
 }
