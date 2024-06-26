@@ -19,6 +19,7 @@ void parsecsv8080ops(struct op *operations){
     }
 
     int r = 0, c = 0, i = 0, inquotemark = 0;
+    char *toremove;
 
     for(;*fp; fp++){
         if(*fp == '"') inquotemark = !inquotemark;
@@ -32,6 +33,9 @@ void parsecsv8080ops(struct op *operations){
         else if(c == 2){
             buf[i] = '\0';
             //modify buf so it doesnt contain d16, d8 or adr and strcpy it to operations[r].op
+            toremove = strstr(buf,"D8") | strstr(buf,"D16") | strstr(buf,"adr");
+            if(toremove) *toremove = '\0';
+            strcpy(operations[r].op, buf);
             i = 0;
             operations[r].size = (int) *fp - '0';
         }
