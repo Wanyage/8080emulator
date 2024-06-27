@@ -7,8 +7,6 @@ struct op{
 };
 
 void parsecsv8080ops(struct op *operations){
-    //D8 means one byte address reference D16 means two byte address reference?
-    //do it in format opsarr[][x] where x = 0 is size of op, 1 is the front most part of op, 2 is the args of the op (skip the part where memory is referenced i.e. D8 or adr)
     char[50] buf = "\0";
     FILE *fp;
 
@@ -33,7 +31,7 @@ void parsecsv8080ops(struct op *operations){
         else if(c == 2){
             buf[i] = '\0';
             toremove = strstr(buf,"D8") | strstr(buf,"D16") | strstr(buf,"adr");
-            if(toremove) *toremove = '\0';
+            if(toremove) *toremove = '\0'; //could still process string more to make formating nicer
             strcpy(operations[r].op, buf);
             i = 0;
             operations[r].size = (int) *fp - '0';
@@ -49,13 +47,19 @@ int 8080op(FILE *fp, int pc, struct op *operations){
     int bytes = operations[*fp].size;
     printf("%04x ", pc);
 
-    for(int i = 0; i < operations[*fp].size; i++) printf("#02x ", fp[i]);
+    for(int i = 0; i < operations[*fp].size; i++) printf("%02x ", fp[i]);
     for(int i = 0; i < 3 - operations[*fp].size; i++) printf("   ");
 
     //still need to do the extra args associated with operations
     printf("%s", op);
+    if(operations[*fp].size == 3){
+        printf("%02x%02x", fp[2], fp[1]);
+    }
+    else if(operations[*fp].size == 2){
+        printf("%02x", fp[1]);
+    }
 
-    //use opsarr to print operation line
+    printf("\n");
 
     return bytes;
 }
