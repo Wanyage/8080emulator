@@ -7,7 +7,7 @@ struct op{
 };
 
 void parsecsv8080ops(struct op *operations){
-    char[50] buf = "\0";
+    char buf[50] = "\0";
     FILE *fp;
 
     fp = fopen("../data/8080ops.csv", "r");
@@ -34,7 +34,7 @@ void parsecsv8080ops(struct op *operations){
             if(toremove) *toremove = '\0'; //could still process string more to make formating nicer
             strcpy(operations[r].op, buf);
             i = 0;
-            operations[r].size = (int) *fp - '0';
+            operations[r].size = (int) (*fp - '0');
         }
         else if(c >= 4){
             c = 0;
